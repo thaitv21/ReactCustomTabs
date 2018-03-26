@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/ReactCustomTabs.iml" filepath="$PROJECT_DIR$/ReactCustomTabs.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/reactcustomtabsandroid/reactcustomtabsandroid.iml" filepath="$PROJECT_DIR$/reactcustomtabsandroid/reactcustomtabsandroid.iml" />
+    </modules>
+  </component>
+</project>
