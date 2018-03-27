@@ -67,32 +67,6 @@ public class AndroidCustomTabsModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void openURL(String url) {
-        CustomTabsServiceConnection mCustomTabsServiceConnection = new CustomTabsServiceConnection() {
-            @Override
-            public void onCustomTabsServiceConnected(ComponentName componentName, CustomTabsClient customTabsClient) {
-                mCustomTabsClient = customTabsClient;
-                mCustomTabsClient.warmup(0L);
-                mCustomTabsSession = mCustomTabsClient.newSession(null);
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-                mCustomTabsClient = null;
-            }
-        };
-
-        final String CUSTOM_TAB_PACKAGE_NAME = getCurrentActivity().getPackageName();
-        CustomTabsClient.bindCustomTabsService(mContext, CUSTOM_TAB_PACKAGE_NAME, mCustomTabsServiceConnection);
-
-        CustomTabsIntent customTabsIntent = builder.build();
-        customTabsIntent.intent.addCategory("android.intent.category.BROWSABLE");
-        customTabsIntent.intent.setPackage("com.android.chrome");
-        Activity activity = getCurrentActivity();
-        customTabsIntent.launchUrl(activity, Uri.parse(url));
-    }
-
-    @ReactMethod
     public void openURL(String url, ReadableMap options) {
         CustomTabsServiceConnection mCustomTabsServiceConnection = new CustomTabsServiceConnection() {
             @Override
@@ -110,24 +84,26 @@ public class AndroidCustomTabsModule extends ReactContextBaseJavaModule {
 
         final String CUSTOM_TAB_PACKAGE_NAME = getCurrentActivity().getPackageName();
         CustomTabsClient.bindCustomTabsService(mContext, CUSTOM_TAB_PACKAGE_NAME, mCustomTabsServiceConnection);
-        if (options.hasKey("tintColor")) {
-            String toolbarColor = options.getString("tintColor");
-            if (isHexColor(toolbarColor)) {
-                builder.setToolbarColor(Color.parseColor(toolbarColor));
-            } else if (isRGBA(toolbarColor)) {
-                builder.setToolbarColor(parseRGBA(toolbarColor));
-            } else if (isRGB(toolbarColor)) {
-                builder.setToolbarColor(parseRGB(toolbarColor));
+        if (options != null) {
+            if (options.hasKey("tintColor")) {
+                String toolbarColor = options.getString("tintColor");
+                if (isHexColor(toolbarColor)) {
+                    builder.setToolbarColor(Color.parseColor(toolbarColor));
+                } else if (isRGBA(toolbarColor)) {
+                    builder.setToolbarColor(parseRGBA(toolbarColor));
+                } else if (isRGB(toolbarColor)) {
+                    builder.setToolbarColor(parseRGB(toolbarColor));
+                }
             }
-        }
 
-        if (options.hasKey("fromBottom")) {
-            builder.setStartAnimations(mContext, R.anim.slide_in_up, R.anim.do_nothing);
-            builder.setStartAnimations(mContext, R.anim.do_nothing, R.anim.slide_out_up);
-        }
+            if (options.hasKey("fromBottom")) {
+                builder.setStartAnimations(mContext, R.anim.slide_in_up, R.anim.do_nothing);
+                builder.setStartAnimations(mContext, R.anim.do_nothing, R.anim.slide_out_up);
+            }
 
-        if (options.hasKey("defaultShareMenuItem") && options.getBoolean("defaultShareMenuItem")) {
-            builder.addDefaultShareMenuItem();
+            if (options.hasKey("defaultShareMenuItem") && options.getBoolean("defaultShareMenuItem")) {
+                builder.addDefaultShareMenuItem();
+            }
         }
         CustomTabsIntent customTabsIntent = builder.build();
         customTabsIntent.intent.addCategory("android.intent.category.BROWSABLE");
